@@ -8,7 +8,8 @@ services:
         env_file:
             - .env
         environment: 
-            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD    
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+            - VIRTUAL_PORT=33061
         ports:
             - '33061:3306'    
         volumes:
@@ -21,6 +22,9 @@ services:
             dockerfile: Dockerfile
         container_name: ${PROJECT_NAME}_phpfpm
         restart: always
+        environment:
+            - VIRTUAL_HOST=php.local
+            - VIRTUAL_PORT=9000
         volumes:
             - ./src/:/var/www/html
         depends_on: 
@@ -32,6 +36,8 @@ services:
             dockerfile: Dockerfile
         container_name: ${PROJECT_NAME}_web
         restart: unless-stopped
+        environment:
+            - VIRTUAL_HOST=wordpress.local
         ports:
             - '8081:80'
         working_dir: /var/www/html    
@@ -48,14 +54,16 @@ services:
             - PMA_HOST=db
             - PMA_PORT=3306
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - VIRTUAL_HOST:phpmyadmin.local
         ports:
             - '8082:80'
         depends_on: 
             - db
         
 
-networks: 
+networks:
     default:
-        driver: bridge
+        external:
+            name: nginx-proxy
         
 

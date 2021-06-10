@@ -37,18 +37,10 @@ free-space:
 ifneq ($(strip $(IMAGE_EXITED)),)
 	@echo "Remove images with status `exited`"
 	docker rm ${IMAGE_EXITED}
-else
-	@echo "No exited images"
+	@echo "Done!"
 endif
-ifneq ($(strip $(shell docker images -q -f "dangling=true")),)
+ifneq ($(strip $(IMAGE_DANGLING)),)
 	@echo "Remove images with status `dangling=true`"
 	docker rmi ${IMAGE_DANGLING}
-else
-	@echo "No dangling images"
-endif
-echo:
-	@echo "test formatted date"
-	@echo $(shell date +%Y%m%d%H%M)
-ifdef IMAGE_EXITED
-	docker rmi ${IMAGE_DANGLING}
+	@echo "Done!"
 endif

@@ -16,6 +16,6 @@
 │       └── config
 │           └── php.ini
 ├── docker-compose.yml
-├── src
+└── src
 ```
 
