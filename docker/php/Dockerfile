@@ -1,6 +1,6 @@
 FROM php:7.4-fpm-alpine
 
-LABEL version=1.0.0 author="Winston Castillo" author.email=winz.git@gmail.com
+LABEL version=1.0.1 author="Winston Castillo" author.email=winz.git@gmail.com
 
 # add extra tools
 # freetype, libjpeg libpng libzip required by gd
@@ -14,10 +14,17 @@ RUN apk add --update --no-cache \
     libpng-dev \
     libzip-dev \
     imagemagick \
-	imagemagick-libs \
-	imagemagick-dev \
-	php7-imagick \
-	php7-pcntl 
+    imagemagick-libs \
+    imagemagick-dev \
+    php7-common \
+    php7-mbstring \
+    php7-sodium \
+    php7-intl \
+    php7-xml \
+    php7-mcrypt \
+    php7-imagick \
+    php7-pcntl \
+    php7-zip
 
 # gd
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
@@ -25,10 +32,17 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
 
 # add pdo_mysql or mysqli
 ## for Fatal error: Uncaught Error: Call to undefined function mysql_connect()
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install bcmath \
+    mysqli \
+    pdo \
+    pdo_mysql \
+    opcache \
+    pcntl \
+    sockets \
+    zip
 
 # enable enable which myql library to use
-RUN docker-php-ext-enable mysqli pdo_mysql 
+RUN docker-php-ext-enable pdo_mysql 
 
 # enable imagick
 RUN printf "\n" | pecl install \
