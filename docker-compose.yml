@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: ${PROJECT_NAME}_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=${PROJECT_NAME}_db
+    expose:
+      - 3306
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/sql:/mnt/files/sql
+
+  phpfpm:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_phpfpm
+    restart: always
+    expose:
+      - 9000
+    volumes:
+      - ./src/:/var/www/html
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_web
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+    expose:
+      - 80
+      - 443
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - phpfpm
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    restart: always
+    expose:
+      - 80
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_ARBITRARY=1
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - VIRTUAL_HOST=${PHPMYADMIN_VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${PHPMYADMIN_VIRTUAL_HOST}
+    depends_on:
+      - db
+
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
