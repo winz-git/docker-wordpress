@@ -32,14 +32,12 @@ clean-images:
 list:
 	@docker-compose -p ${PROJECT} ps
 
-bash:
-	@docker-compose -p ${PROJECT} exec amp-app /bin/bash
-
 logs:
 	@docker-compose -p ${PROJECT} logs -f
 
 wp-download:
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp core download --skip-themes --skip-plugins --allow-root
+
 wp-config: wp-download
 	@echo "Getting database hostname"
 	@echo "db_host:${DB_HOST}"
@@ -56,6 +54,13 @@ wp-config: wp-download
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp config set DB_PASSWORD ${MYSQL_ROOT_PASSWORD} --allow-root
 	@echo "Setting table_prefix"
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp config set table_prefix wppd_ --allow-root
+
+wp-replace-url:
+	@echo "replace url"
+	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_URL} ${TARGET_URL} --all-tables --report-changed-only --allow-root
+	@echo "Replace Path"
+	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_PATH} ${TARGET_PATH} --all-tables --report-changed-only --allow-root
+
 
 dump_db:
 ifdef PARAM_DATETIME
