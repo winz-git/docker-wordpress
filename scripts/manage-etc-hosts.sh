@@ -4,8 +4,8 @@
 # - https://gist.github.com/irazasyed/a7b0a079e7727a4315b9
 
 # run:
-# ./manage-hosts.sh add 10.20.1.2 test.com
-# ./manage-hosts.sh remove 10.20.1.2 test.com
+# ./manage-etc-hosts.sh add 10.20.1.2 test.com
+# ./manage-etc-hosts.sh remove 10.20.1.2 test.com
 
 # PATH TO YOUR HOSTS FILE
 ETC_HOSTS=/etc/hosts
@@ -17,7 +17,7 @@ function remove() {
     # Hostname to add/remove.
     HOSTNAME=$2
     HOSTS_LINE="$IP[[:space:]]$HOSTNAME"
-    if [ -n "$(grep -P $HOSTS_LINE $ETC_HOSTS)" ]
+    if [ -n "$(grep $HOSTS_LINE $ETC_HOSTS)" ]
     then
         echo "$HOSTS_LINE Found in your $ETC_HOSTS, Removing now...";
         sudo sed -i".bak" "/$HOSTS_LINE/d" $ETC_HOSTS
@@ -31,7 +31,8 @@ function add() {
     HOSTNAME=$2
     HOSTS_LINE="$IP[[:space:]]$HOSTNAME"
     line_content=$( printf "%s\t%s\n" "$IP" "$HOSTNAME" )
-    if [ -n "$(grep -P $HOSTS_LINE $ETC_HOSTS)" ]
+    entry_count=$( grep $HOSTS_LINE $ETC_HOSTS )
+    if [ -n "$( grep $HOSTS_LINE $ETC_HOSTS )" ]
         then
             echo "$line_content already exists : $(grep $HOSTNAME $ETC_HOSTS)"
         else
