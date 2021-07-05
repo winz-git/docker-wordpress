@@ -39,7 +39,7 @@ function add() {
             echo "Adding $line_content to your $ETC_HOSTS";
             sudo -- sh -c -e "echo '$line_content' >> /etc/hosts";
 
-            if [ -n "$(grep -P $HOSTNAME $ETC_HOSTS)" ]
+            if [ -n "$( grep $HOSTNAME $ETC_HOSTS )" ]
                 then
                     echo "$line_content was added succesfully";
                 else

@@ -38,7 +38,7 @@ logs:
 wp-download:
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp core download --skip-themes --skip-plugins --allow-root
 
-wp-config: wp-download
+wp-config: create-host wp-download
 	@echo "Getting database hostname"
 	@echo "db_host:${DB_HOST}"
 	@echo "copy wp-config.php"
@@ -60,6 +60,12 @@ wp-replace-url:
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_URL} ${TARGET_URL} --all-tables --report-changed-only --allow-root
 	@echo "Replace Path"
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_PATH} ${TARGET_PATH} --all-tables --report-changed-only --allow-root
+
+create-host:
+	./scripts/manage-etc-hosts.sh add 127.0.0.1 ${TARGET_URL}
+
+remove-host:
+	./scripts/manage-etc-hosts.sh remove 127.0.0.1 ${TARGET_URL}
 
 
 dump_db:
