@@ -36,9 +36,11 @@ logs:
 	@docker-compose -p ${PROJECT} logs -f
 
 wp-download:
-	@docker exec -it ${PROJECT_NAME}_phpfpm wp core download --skip-themes --skip-plugins --allow-root
+	@docker exec -it ${PROJECT_NAME}_phpfpm wp core download --skip-themes=twentynineteen,twentytwenty,twentytwentyone --skip-plugins --allow-root
 
-wp-config: create-host wp-download
+wp-setup: create-host start wp-config
+
+wp-config: wp-download
 	@echo "Getting database hostname"
 	@echo "db_host:${DB_HOST}"
 	@echo "copy wp-config.php"
