@@ -58,10 +58,19 @@ wp-config: wp-download
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp config set table_prefix wppd_ --allow-root
 
 wp-replace-url:
-	@echo "replace url"
+	@echo "Replace url..."
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_URL} ${TARGET_URL} --all-tables --report-changed-only --allow-root
-	@echo "Replace Path"
+	@echo "Replace Path..."
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_PATH} ${TARGET_PATH} --all-tables --report-changed-only --allow-root
+
+docker-restart:
+	@echo "Docker Restart - phpfpm..."
+	@docker restart ${PROJECT_NAME}_phpfpm
+	@echo "Docker Restart - web..."
+	@docker restart ${PROJECT_NAME}_web
+
+db-restore:
+	cat ${SQL_FULL_PATH} | docker exec -i ${PROJECT_NAME}_db /usr/bin/mysql -u root --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
 
 create-host:
 	./scripts/manage-etc-hosts.sh add 127.0.0.1 ${TARGET_URL}
