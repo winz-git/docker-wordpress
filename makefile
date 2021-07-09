@@ -7,6 +7,7 @@ PROJECT := ${PROJECT_NAME}
 IMAGE_EXITED := $(shell docker ps -q -f 'status=exited')
 IMAGE_DANGLING := $(shell docker images -q -f "dangling=true")
 PARAM_DATETIME := $(shell date +%Y%m%d%H%M)
+TODAY := $(shell date +%Y%m%d)
 DB_HOST := $(shell docker exec -it ${PROJECT_NAME}_db hostname)
 
 
@@ -71,6 +72,12 @@ docker-restart:
 
 db-restore:
 	cat ${SQL_FULL_PATH} | docker exec -i ${PROJECT_NAME}_db /usr/bin/mysql -u root --password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
+
+db-backup:
+	@echo "create backup folder today"
+	mkdir -p ${BACKUP_PATH}/${TODAY}
+	@echo "Executing mysqldump..."
+	@docker exec -i ${PROJECT_NAME}_db sh -c 'exec mysqldump -uroot -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE}' > ${BACKUP_TODAY}/${BACKUP_SQL_FILE}
 
 create-host:
 	./scripts/manage-etc-hosts.sh add 127.0.0.1 ${TARGET_URL}
