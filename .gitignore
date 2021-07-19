@@ -19,3 +19,6 @@ src/*
 *.log
 *.sql
 *.sqlite
+
+.DS_Store
+.idea
