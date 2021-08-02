@@ -1,6 +1,6 @@
     server {
         listen         80;
-        server_name    wordpress.site1.local;
+        server_name    my-wordpress.example.com;
         root           /var/www/html;
         index          index.php;    
 
