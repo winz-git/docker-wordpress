@@ -64,6 +64,13 @@ wp-replace-url:
 	@echo "Replace Path..."
 	@docker exec -it ${PROJECT_NAME}_phpfpm wp search-replace ${SOURCE_PATH} ${TARGET_PATH} --all-tables --report-changed-only --allow-root
 
+# wordpress standard
+phpcs:
+	@docker exec -it ${PROJECT_NAME}_phpfpm phpcs ${ARGS}
+
+phpcbf:
+	@docker exec -it ${PROJECT_NAME}_phpfpm phpcbf --standard= ${ARGS}
+
 docker-restart:
 	@echo "Docker Restart - phpfpm..."
 	@docker restart ${PROJECT_NAME}_phpfpm
