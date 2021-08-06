@@ -8,6 +8,8 @@ set -u
 #*************************************
 
 # Variables
+# load env
+source ./.env
 
 #*************************************
 # functions
@@ -26,5 +28,18 @@ install_wp-cli() {
 	echo "installing wp-cli"
 }
 
+backup_code() {
+	echo "create directory for today at backup..."
+	mkdir -p ${BACKUP_TODAY}
+	echo "change directory to wp-content.."
+	cd src/wp-content/
+	echo "current working directory ${PWD}"
+	echo "archiving themes ..."
+	tar -czf ../../backup/${TODAY}/themes.tar.gz themes/
+	echo "archiving uploads ..."
+	tar -czf ../../backup/${TODAY}/uploads.tar.gz uploads/
+	echo "archiving plugins ..."
+	tar -czf ../../backup/${TODAY}/plugins.tar.gz plugins/
+}
 
-install_wp-cli
+backup_code
