@@ -41,25 +41,34 @@ backup_code() {
 	if [ -f "$theme_file" ]
 	then mv "$theme_file" "$theme_file-$(date +%H%M%S)"
 	fi
-	echo "archiving themes ..."
-	tar_result=$(tar -czf ../../backup/${TODAY}/themes.tar.gz themes/)
-	echo ${tar_result}
+	if [ -d "themes" ] 
+	then
+		echo "archiving themes ..."
+		tar_result=$(tar -czf ../../backup/${TODAY}/themes.tar.gz themes/)
+		echo ${tar_result}
+	fi
 	echo "checking if uploads already exists"
 	upload_file="$backup_dir/${TODAY}/uploads.tar.gz"
 	if [ -f "$upload_file" ]
 	then mv "$upload_file" "$upload_file-$(date +%H%M%S)"
 	fi
-	echo "archiving uploads ..."
-	tar_result=$(tar -czf ../../backup/${TODAY}/uploads.tar.gz uploads/)
-	echo ${tar_result}
+	if [ -d "uploads" ] 
+	then
+		echo "archiving uploads ..."
+		tar_result=$(tar -czf ../../backup/${TODAY}/uploads.tar.gz uploads/)
+		echo ${tar_result}
+	fi
 	echo "checking if plugins already exists"
 	plugins_file="$backup_dir/${TODAY}/plugins.tar.gz"
 	if [ -f "$plugins_file" ]
 	then mv "$plugins_file" "$plugins_file-$(date +%H%M%S)"
 	fi
-	echo "archiving plugins ..."
-	tar_result=$(tar -czf ../../backup/${TODAY}/plugins.tar.gz plugins/)
-	echo ${tar_result}
+	if [ -d "plugins" ] 
+	then
+		echo "archiving plugins ..."
+		tar_result=$(tar -czf ../../backup/${TODAY}/plugins.tar.gz plugins/)
+		echo ${tar_result}
+	fi
 }
 
 backup_code
